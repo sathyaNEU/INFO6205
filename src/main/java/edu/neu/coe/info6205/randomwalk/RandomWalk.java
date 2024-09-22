@@ -4,6 +4,13 @@
 
 package edu.neu.coe.info6205.randomwalk;
 
+import com.opencsv.CSVWriter;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class RandomWalk {
@@ -21,7 +28,8 @@ public class RandomWalk {
      */
     private void move(int dx, int dy) {
         // TO BE IMPLEMENTED  do move
-         throw new RuntimeException("Not implemented");
+        this.x = this.x + dx;
+        this.y = this.y + dy;
         // END SOLUTION
     }
 
@@ -31,8 +39,9 @@ public class RandomWalk {
      * @param m the number of steps the drunkard takes
      */
     private void randomWalk(int m) {
-        // TO BE IMPLEMENTED 
-throw new RuntimeException("implementation missing");
+        // TO BE IMPLEMENTED
+        for(int i = 0; i < m; i++)
+            randomMove();
     }
 
     /**
@@ -52,8 +61,7 @@ throw new RuntimeException("implementation missing");
      */
     public double distance() {
         // TO BE IMPLEMENTED 
-         return 0.0;
-        // END SOLUTION
+         return Math.sqrt(this.x * this.x + this.y * this.y); //sqrt((y2-y1)^2 - (x2-x1)^2) ; y2 = this.y ; y1 = 0 ; x2 = this.x ; x1 = 0
     }
 
     /**
@@ -73,14 +81,51 @@ throw new RuntimeException("implementation missing");
         return totalDistance / n;
     }
 
+    public static void generateValidationData(int[] exp_m, int n){
+        String filePath = System.getProperty("user.dir") + "\\src\\main\\java\\edu\\neu\\coe\\info6205\\randomwalk\\results.csv";
+        System.out.println(filePath);
+        File file = new File(filePath);
+
+        try {
+            // create FileWriter object with file as parameter
+            FileWriter outputfile = new FileWriter(file);
+
+            // create CSVWriter object filewriter object as parameter
+            CSVWriter writer = new CSVWriter(outputfile);
+
+            // create a List which contains String array
+            List<String[]> data = new ArrayList<String[]>();
+            data.add(new String[] { "m", "d"});
+//            data.add(new String[] { "Aman", "10", "620" });
+//            data.add(new String[] { "Suraj", "10", "630" });
+            for(int m : exp_m) {
+                for(int exp = 0; exp < 60 ;exp++) {
+                    double meanDistance = randomWalkMulti(m, n);
+                    data.add(new String[] {String.valueOf(m),String.valueOf(meanDistance)});
+                    System.out.println(m + " steps: " + meanDistance + " over " + n + " experiments");
+                }
+            }
+            writer.writeAll(data);
+
+            // closing writer connection
+            writer.close();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
-        if (args.length == 0)
-            throw new RuntimeException("Syntax: RandomWalk steps [experiments]");
-        int m = Integer.parseInt(args[0]);
-        int n = 30;
-        if (args.length > 1) n = Integer.parseInt(args[1]);
-        double meanDistance = randomWalkMulti(m, n);
-        System.out.println(m + " steps: " + meanDistance + " over " + n + " experiments");
+//        if (args.length == 0)
+//            throw new RuntimeException("Syntax: RandomWalk steps [experiments]");
+//        int m = Integer.parseInt(args[0]);
+//        int n = 30;
+//        if (args.length > 1) n = Integer.parseInt(args[1]);
+        int[] exp_m = {5,10,15,20,25,30,35,40,45,50}; //number of steps
+//        int[] exp_n = {100,1000,10000,100000,1000000,10000000}; //number of experimentations
+        int n = 100;
+        generateValidationData(exp_m,n);
     }
 
 }
