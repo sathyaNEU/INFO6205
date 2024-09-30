@@ -1,6 +1,7 @@
 package edu.neu.coe.info6205.threesum;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * <p>
  * NOTE: The array provided in the constructor MUST be ordered.
  */
-public class ThreeSumQuadratic implements ThreeSum {
+class ThreeSumQuadratic implements ThreeSum {
     /**
      * Construct a ThreeSumQuadratic on a.
      *
@@ -20,6 +21,7 @@ public class ThreeSumQuadratic implements ThreeSum {
      */
     public ThreeSumQuadratic(int[] a) {
         this.a = a;
+        Arrays.sort(this.a);
         length = a.length;
     }
 
@@ -38,10 +40,26 @@ public class ThreeSumQuadratic implements ThreeSum {
      */
     public List<Triple> getTriples(int j) {
         List<Triple> triples = new ArrayList<>();
-        // TO BE IMPLEMENTED  : for each candidate, test if a[i] + a[j] + a[k] = 0.
-throw new RuntimeException("implementation missing");
+        int start = 0;
+        int end = length - 1;
+        while (start <  j && end >  j) {
+            int sum = this.a[start] + this.a[end] + this.a[j];
+            if(sum == 0)   {
+                triples.add(new Triple( this.a[start],this.a[j],this.a[end]));
+                start++;
+                end--;
+            }
+            else{
+                if (sum>0) end--;
+                else start++;
+            }
+        }
+        return triples;
     }
 
     private final int[] a;
     private final int length;
+
 }
+
+
