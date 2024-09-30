@@ -39,19 +39,19 @@ class ThreeSumQuadratic implements ThreeSum {
      * @return a Triple such that
      */
     public List<Triple> getTriples(int j) {
-        List<Triple> triples = new ArrayList<>();
-        int start = 0;
-        int end = length - 1;
-        while (start <  j && end >  j) {
+        List<Triple> triples = new ArrayList<>();  //j is the fixed index
+        int start = 0; //start index
+        int end = length - 1; //end index
+        while (start <  j && end >  j) { //2 pointer solution to run the loop until the start and end does not cross the fixed index
             int sum = this.a[start] + this.a[end] + this.a[j];
-            if(sum == 0)   {
+            if(sum == 0)   { // return the triplet if sum is 0
                 triples.add(new Triple( this.a[start],this.a[j],this.a[end]));
                 start++;
                 end--;
             }
             else{
-                if (sum>0) end--;
-                else start++;
+                if (sum>0) end--; //if the sum is greater than target (0), we need a lesser integer to bring the sum closer to the target
+                else start++; //opposite case of the above comment stmt
             }
         }
         return triples;
