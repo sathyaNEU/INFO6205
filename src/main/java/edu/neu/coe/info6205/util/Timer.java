@@ -61,7 +61,37 @@ public class Timer {
      */
     public <T, U> double repeat(int n, boolean warmup, Supplier<T> supplier, Function<T, U> function, UnaryOperator<T> preFunction, Consumer<U> postFunction) {
         // TO BE IMPLEMENTED : note that the timer is running when this method is called and should still be running when it returns.
-         return 0;
+
+        //warmup phase
+        if (warmup) {
+            System.out.println("Starting warmup...");
+            for (int i = 0; i < n; i++) {
+                T t = (preFunction != null) ? preFunction.apply(supplier.get()) : supplier.get();
+                U result = function.apply(t);
+                if (postFunction != null) {
+                    postFunction.accept(result);
+                }
+            }
+            System.out.println("Warmup complete.");
+            return 0;
+        }
+        else{
+            for (int i = 0; i < n; i++) {
+                // If a preFunction is provided, apply it before running the main function
+                T t = (preFunction != null) ? preFunction.apply(supplier.get()) : supplier.get();
+                // Run the target function and time it
+                U result = function.apply(t);
+                // If a postFunction is provided, apply it after running the main function
+                if (postFunction != null) {
+                    postFunction.accept(result);
+                }
+                lap(); // Record the lap (iteration) time
+            }
+            // After finishing all repetitions, pause the timer
+            pause();
+            // Return the average time per lap
+            return meanLapTime();
+        }
         // END SOLUTION
     }
 
@@ -188,7 +218,7 @@ public class Timer {
      */
     private static long getClock() {
         // TO BE IMPLEMENTED 
-         return 0;
+        return System.nanoTime();
         // END SOLUTION
     }
 
@@ -201,7 +231,7 @@ public class Timer {
      */
     private static double toMillisecs(long ticks) {
         // TO BE IMPLEMENTED 
-         return 0;
+        return ticks / 1_000_000.0;
         // END SOLUTION
     }
 
