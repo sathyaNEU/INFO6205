@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  *
  * @param <K>
  */
-public class PriorityQueue<K> implements Iterable<K> {
+public class PQ<K> implements Iterable<K> {
 
     /**
      * Basic constructor that takes the max value, an actual array of elements, and a comparator.
@@ -33,7 +33,7 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param comparator a comparator for the type K
      * @param floyd      true if we use Floyd's trick
      */
-    public PriorityQueue(boolean max, Object[] binHeap, int first, int last, Comparator<K> comparator, boolean floyd) {
+    public PQ(boolean max, Object[] binHeap, int first, int last, Comparator<K> comparator, boolean floyd) {
         this.max = max;
         this.first = first;
         this.comparator = comparator;
@@ -51,7 +51,7 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param max        whether or not this is a Maximum Priority Queue as opposed to a Minimum PQ.
      * @param comparator a comparator for the type K
      */
-    public PriorityQueue(int n, int first, boolean max, Comparator<K> comparator, boolean floyd) {
+    public PQ(int n, int first, boolean max, Comparator comparator, boolean floyd) {
 
         // NOTE that we reserve the first element of the binary heap, so the length must be n+1, not n
         this(max, new Object[n + first], first, 0, comparator, floyd);
@@ -64,7 +64,7 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param max        whether or not this is a Maximum Priority Queue as opposed to a Minimum PQ.
      * @param comparator a comparator for the type K
      */
-    public PriorityQueue(int n, boolean max, Comparator<K> comparator, boolean floyd) {
+    public PQ(int n, boolean max, Comparator<K> comparator, boolean floyd) {
 
         // NOTE that we reserve the first element of the binary heap, so the length must be n+1, not n
         this(n, 1, max, comparator, floyd);
@@ -77,7 +77,7 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param max        whether or not this is a Maximum Priority Queue as opposed to a Minimum PQ.
      * @param comparator a comparator for the type K
      */
-    public PriorityQueue(int n, boolean max, Comparator<K> comparator) {
+    public PQ(int n, boolean max, Comparator<K> comparator) {
 
         // NOTE that we reserve the first element of the binary heap, so the length must be n+1, not n
         this(n, 1, max, comparator, false);
@@ -89,7 +89,7 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param n          the desired maximum capacity.
      * @param comparator a comparator for the type K
      */
-    public PriorityQueue(int n, Comparator<K> comparator) {
+    public PQ(int n, Comparator<K> comparator) {
         this(n, 1, true, comparator, true);
     }
 
@@ -264,13 +264,13 @@ public class PriorityQueue<K> implements Iterable<K> {
         s1[4] = "E";
         boolean max = true;
         boolean floyd = true;
-        PriorityQueue<String> PQ_string_floyd = new PriorityQueue<>(max, s1, 1, 5, Comparator.comparing(String::toString), floyd);
-        PriorityQueue<String> PQ_string_nofloyd = new PriorityQueue<>(max, s1, 1, 5, Comparator.comparing(String::toString), false);
+        PQ<String> PQ_string_floyd = new PQ<>(max, s1, 1, 5, Comparator.comparing(String::toString), floyd);
+        PQ<String> PQ_string_nofloyd = new PQ<>(max, s1, 1, 5, Comparator.comparing(String::toString), false);
         Integer[] s2 = new Integer[5]; //created an Integer type array with size 5
         for (int i = 0; i < 5; i++) {
             s2[i] = i;
         }
-        PriorityQueue<Integer> PQ_int_floyd = new PriorityQueue<>(max, s2, 1, 5, Comparator.comparing(Integer::intValue), floyd);
-        PriorityQueue<Integer> PQ_int_nofloyd = new PriorityQueue<>(max, s2, 1, 5, Comparator.comparing(Integer::intValue), false);
+        PQ<Integer> PQ_int_floyd = new PQ<>(max, s2, 1, 5, Comparator.comparing(Integer::intValue), floyd);
+        PQ<Integer> PQ_int_nofloyd = new PQ<>(max, s2, 1, 5, Comparator.comparing(Integer::intValue), false);
     }
 }

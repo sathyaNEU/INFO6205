@@ -3,8 +3,9 @@
  */
 package edu.neu.coe.info6205.util;
 
+import edu.neu.coe.info6205.pq.KaryHeap;
 import edu.neu.coe.info6205.pq.PQException;
-import edu.neu.coe.info6205.pq.PriorityQueue;
+import edu.neu.coe.info6205.pq.PQ;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -25,19 +26,31 @@ public class PQBenchmark {
         logger.info("SortBenchmark.main: " + config.get("huskysort", "version") + " with word counts: " + Arrays.toString(args));
         if (args.length == 0) logger.warn("No word counts specified on the command line");
         PQBenchmark benchmark = new PQBenchmark(config);
-        System.out.println("with floyd: " + benchmark.insertDeleteN(10000, 1000, true));
-        System.out.println("no floyd: " + benchmark.insertDeleteN(10000, 1000, false));
+        System.out.println("with floyd: " + benchmark.insertDeleteN(16000, 4000, true));
+        System.out.println("no floyd: " + benchmark.insertDeleteN(16000, 4000, false));
+
+/// Benchmark the 4-ary Heap with 16,000 insertions and 4,000 removals
+        System.out.println("4-ary Heap with Floyd: " + benchmark.insertDeleteNWithKaryHeap(16000, 4000, 4));
+        System.out.println("4-ary Heap without Floyd: " + benchmark.insertDeleteNWithKaryHeap(16000, 4000, 4));
+
     }
 
     // Insert and delete random integer array with floyd methods according to parameter
     private void insertArray(int[] a, final boolean floyd) {
-        PriorityQueue<Integer> pq = new PriorityQueue<Integer>(a.length, true, Comparator.naturalOrder(), floyd);
+        // Create a PriorityQueue with the correct constructor parameters
+        PQ<Integer> pq = new PQ<>(a.length, 1, true, Comparator.naturalOrder(), floyd);
         final Random random = new Random();
+
+        // Insert 16,000 random elements
         for (int j : a) {
-            pq.give(j);
-            if (random.nextBoolean()) {
+            pq.give(j); // Insert element
+        }
+
+        // Remove 4,000 elements
+        for (int i = 0; i < 4000; i++) {
+            if (!pq.isEmpty()) { // Check if the queue is not empty
                 try {
-                    pq.take();
+                    pq.take(); // Remove the highest priority element
                 } catch (PQException e) {
                     e.printStackTrace();
                 }
@@ -46,20 +59,75 @@ public class PQBenchmark {
     }
 
     private double insertDeleteN(final int n, int m, final boolean floyd) {
+        // Create an array of random integers
         final Random ran = new Random();
         int[] random = new int[n];
+
+        // Fill array with random numbers
         for (int i = 0; i < n; i++) {
-            random[i] = ran.nextInt(n);
+            random[i] = ran.nextInt(n); // You can adjust this range if needed
         }
+
+        // Set up a benchmark for the PriorityQueue operations
         Benchmark<Boolean> bm = new Benchmark_Timer<>(
                 "testPQwithFloydoff",
                 null,
-                b -> insertArray(random, floyd),
+                b -> insertArray(random, floyd), // Benchmark function
                 null
         );
-        return bm.run(true, m);
 
+        // Run the benchmark for 100 iterations or any desired count
+        return bm.run(true, 1000); // You can change 100 to however many runs you want for averaging
     }
+
+
+    //new
+    private void insertArrayKaryHeap(int[] a, final boolean floyd, int k) {
+        KaryHeap<Integer> karyHeap = new KaryHeap<>(a.length, k, Comparator.naturalOrder());
+        final Random random = new Random();
+        for (int j : a) {
+            karyHeap.insert(j);
+            if (random.nextBoolean()) {
+                karyHeap.remove();
+            }
+        }
+    }
+
+    private double insertDeleteNWithKaryHeap(final int n, final int m, final int k) {
+        // Create a benchmark instance
+        Benchmark<Boolean> bm = new Benchmark_Timer<>(
+                "insertDeleteNWithKaryHeap",
+                null,
+                b -> {
+                    KaryHeap<Integer> karyHeap = new KaryHeap<>(n, k, Comparator.naturalOrder());
+                    final Random random = new Random();
+
+                    // Insert 16000 random elements
+                    for (int i = 0; i < n; i++) {
+                        int element = random.nextInt(n);
+                        karyHeap.insert(element);
+                    }
+
+                    // Remove 4000 elements
+                    for (int i = 0; i < m; i++) {
+                        if (!karyHeap.isEmpty()) {
+                            karyHeap.remove();
+                        }
+                    }
+
+                     // return value for the benchmark, can be any dummy value
+                },
+                null
+        );
+
+        // Run the benchmark with m repetitions
+        return bm.run(true, 1000); // Change 10 to however many runs you want for averaging
+    }
+
+
+// In the main method, you can now benchmark the KaryHeap as follows:
+
+
 
     /**
      * For mergesort, the number of array accesses is actually six times the number of comparisons.
