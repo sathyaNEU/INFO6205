@@ -26,12 +26,38 @@ public class PQBenchmark {
         logger.info("SortBenchmark.main: " + config.get("huskysort", "version") + " with word counts: " + Arrays.toString(args));
         if (args.length == 0) logger.warn("No word counts specified on the command line");
         PQBenchmark benchmark = new PQBenchmark(config);
+
+        System.out.println("with floyd: " + benchmark.insertDeleteN(4000, 1000, true));
+        System.out.println("no floyd: " + benchmark.insertDeleteN(4000, 1000, false));
+
+        System.out.println("with floyd: " + benchmark.insertDeleteN(8000, 2000, true));
+        System.out.println("no floyd: " + benchmark.insertDeleteN(8000, 2000, false));
+
+        // Benchmark the Binary Heap with 16,000 insertions and 4,000 removals
         System.out.println("with floyd: " + benchmark.insertDeleteN(16000, 4000, true));
         System.out.println("no floyd: " + benchmark.insertDeleteN(16000, 4000, false));
 
-/// Benchmark the 4-ary Heap with 16,000 insertions and 4,000 removals
+        System.out.println("with floyd: " + benchmark.insertDeleteN(32000, 8000, true));
+        System.out.println("no floyd: " + benchmark.insertDeleteN(32000, 8000, false));
+
+        System.out.println("with floyd: " + benchmark.insertDeleteN(64000, 16000, true));
+        System.out.println("no floyd: " + benchmark.insertDeleteN(64000, 16000, false));
+
+        System.out.println("4-ary Heap with Floyd: " + benchmark.insertDeleteNWithKaryHeap(4000, 1000, 4));
+        System.out.println("4-ary Heap without Floyd: " + benchmark.insertDeleteNWithKaryHeap(4000, 1000, 4));
+
+        System.out.println("4-ary Heap with Floyd: " + benchmark.insertDeleteNWithKaryHeap(8000, 2000, 4));
+        System.out.println("4-ary Heap without Floyd: " + benchmark.insertDeleteNWithKaryHeap(8000, 2000, 4));
+
+        // Benchmark the 4-ary Heap with 16,000 insertions and 4,000 removals
         System.out.println("4-ary Heap with Floyd: " + benchmark.insertDeleteNWithKaryHeap(16000, 4000, 4));
         System.out.println("4-ary Heap without Floyd: " + benchmark.insertDeleteNWithKaryHeap(16000, 4000, 4));
+
+        System.out.println("4-ary Heap with Floyd: " + benchmark.insertDeleteNWithKaryHeap(32000, 8000, 4));
+        System.out.println("4-ary Heap without Floyd: " + benchmark.insertDeleteNWithKaryHeap(32000, 8000, 4));
+
+        System.out.println("4-ary Heap with Floyd: " + benchmark.insertDeleteNWithKaryHeap(64000, 16000, 4));
+        System.out.println("4-ary Heap without Floyd: " + benchmark.insertDeleteNWithKaryHeap(64000, 16000, 4));
 
     }
 
@@ -77,7 +103,7 @@ public class PQBenchmark {
         );
 
         // Run the benchmark for 100 iterations or any desired count
-        return bm.run(true, 1000); // You can change 100 to however many runs you want for averaging
+        return bm.run(true, 100); // You can change 100 to however many runs you want for averaging
     }
 
 
@@ -121,7 +147,7 @@ public class PQBenchmark {
         );
 
         // Run the benchmark with m repetitions
-        return bm.run(true, 1000); // Change 10 to however many runs you want for averaging
+        return bm.run(true, 100); // Change 10 to however many runs you want for averaging
     }
 
 
