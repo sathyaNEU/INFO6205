@@ -20,10 +20,13 @@ public class Main {
         processArgs(args);
         System.out.println("Degree of parallelism: " + ForkJoinPool.getCommonPoolParallelism());
         Random random = new Random();
-        int[] array = new int[2000000];
+        int size = 500000;
+        int[] array = new int[size]; //2000000
         ArrayList<Long> timeList = new ArrayList<>();
-        for (int j = 50; j < 100; j++) {
-            ParSort.cutoff = 10000 * (j + 1);
+        int smul = 25;
+        int emul = 50;
+        for (int j = smul; j < emul; j++) {
+            ParSort.cutoff = 5000 * (j + 1); //10000
             // for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
             long time;
             long startTime = System.currentTimeMillis();
@@ -40,12 +43,13 @@ public class Main {
 
         }
         try {
-            FileOutputStream fis = new FileOutputStream("./src/result.csv");
+            String fn = "result_thread_"+ForkJoinPool.getCommonPoolParallelism() + "_size_"+ size + ".csv";
+            FileOutputStream fis = new FileOutputStream("./src/"+fn);
             OutputStreamWriter isr = new OutputStreamWriter(fis);
             BufferedWriter bw = new BufferedWriter(isr);
-            int j = 0;
+            int j = smul;
             for (long i : timeList) {
-                String content = (double) 10000 * (j + 1) / 2000000 + "," + (double) i / 10 + "\n";
+                String content = (double) 5000 * (j + 1) / size + "," + (double) i / 10 + "\n";
                 j++;
                 bw.write(content);
                 bw.flush();
@@ -72,10 +76,15 @@ public class Main {
 
     private static void processCommand(String x, String y) {
         if (x.equalsIgnoreCase("N")) setConfig(x, Integer.parseInt(y));
-        else
-            // TODO sort this out
-            if (x.equalsIgnoreCase("P")) //noinspection ResultOfMethodCallIgnored
-                ForkJoinPool.getCommonPoolParallelism();
+//        else
+//            // TODO sort this out
+//            if (x.equalsIgnoreCase("P")) //noinspection ResultOfMethodCallIgnored
+//                ForkJoinPool.getCommonPoolParallelism();
+        if (x.equalsIgnoreCase("-P")) {
+            int parallelism = Integer.parseInt(y);
+            System.out.println("setting parallelism: " + parallelism);
+            System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", String.valueOf(parallelism));
+        }
     }
 
     private static void setConfig(String x, int i) {
