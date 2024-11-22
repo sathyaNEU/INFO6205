@@ -335,6 +335,8 @@ public class SortBenchmark {
         logger.info("****************************** Integer sort: " + n + " " + sorter.getDescription() + " ******************************");
         new SorterBenchmark<>(Integer.class, preProcessor, sorter, numbers, nRuns, timeLoggers).run(getDescription(n, sorter), n);
         sorter.close();
+        System.out.println("Mean Inversions"+ String.valueOf(meanInversions(n)));
+        System.out.println("Min Comparisons"+ String.valueOf(minComparisons(n)));
         logger.info("************************************************************");
     }
 
